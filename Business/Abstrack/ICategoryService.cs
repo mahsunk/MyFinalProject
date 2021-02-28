@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Utilities.Result;
 using Entities.Concrete;
 
 namespace Business.Abstrack
 {
    public interface ICategoryService
     {
-        List<Category> GetAll();
-        Category GetById(int categoryId);
+      IDataResult< List<Category>> GetAll();
+        IDataResult<Category> GetById(int categoryId);
     }
 }

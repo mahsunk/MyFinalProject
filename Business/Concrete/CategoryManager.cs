@@ -2,28 +2,29 @@
 using System.Collections.Generic;
 using System.Text;
 using Business.Abstrack;
+using Core.Utilities.Result;
 using DataAccess.Abstrack;
 using Entities.Concrete;
 
 namespace Business.Concrete
 {
-public    class CategoryManager:ICategoryService
-{
-    private ICategoryDal _categoryDal;
-
-    public CategoryManager(ICategoryDal categoryDal)
+    public class CategoryManager : ICategoryService
     {
-        _categoryDal = categoryDal;
-    }
+        private ICategoryDal _categoryDal;
 
-    public List<Category> GetAll()
+        public CategoryManager(ICategoryDal categoryDal)
         {
-         return   _categoryDal.GetAll();
+            _categoryDal = categoryDal;
         }
 
-        public Category GetById(int categoryId)
+        public IDataResult<List<Category>> GetAll()
         {
-            return _categoryDal.Get(c=>c.CategoryId==categoryId);
+            return new SuccessDataResult<List<Category>>(_categoryDal.GetAll());
+        }
+
+        public IDataResult<Category> GetById(int categoryId)
+        {
+            return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryId == categoryId)); 
         }
     }
 }
