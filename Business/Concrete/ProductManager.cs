@@ -19,9 +19,11 @@ using Microsoft.EntityFrameworkCore.Internal;
 using ValidationException = FluentValidation.ValidationException;
 using System.Linq;
 using Business.BusinessAspects.Autofac;
+using Core.Aspects.Autofac.Caching;
 
 namespace Business.Concrete
 {
+    //[SecuredOperation("car.add,admin")]
     public class ProductManager : IProductService
     {
         private IProductDal _productDal;
@@ -34,6 +36,8 @@ namespace Business.Concrete
 
         }
 
+
+        [CacheAspect(60)]//key value
         public IDataResult<List<Product>> GetAll()
         {
             //iş kodları
@@ -65,18 +69,20 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
         }
 
-        [SecuredOperation("product.add,admin")]
+        
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
 
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfProductNameExists(product.ProductName),CheckIfCategoryLimitExceded());
-            if (result!=null)
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceded());
+            if (result != null)
             {
                 return result;
             }
@@ -87,6 +93,22 @@ namespace Business.Concrete
 
             return new SuccessResult(Messages.ProductAdded);
 
+
+        }
+
+        public IResult Update(Product product)
+        {
+            IResult result = BusinessRules.Run( );
+            if (result != null)
+            {
+                return result;
+            }
+
+
+            _productDal.Add(product);
+
+
+            return new SuccessResult(Messages.ProductUpdate);
 
         }
 
@@ -113,7 +135,7 @@ namespace Business.Concrete
         private IResult CheckIfCategoryLimitExceded()
         {
             var result = _categoryService.GetAll();
-            if (result.Data.Count>15)
+            if (result.Data.Count > 15)
             {
                 return new ErrorResult(Messages.CategoryLimitExceded);
             }
