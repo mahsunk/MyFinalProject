@@ -23,7 +23,6 @@ using Core.Aspects.Autofac.Caching;
 
 namespace Business.Concrete
 {
-    //[SecuredOperation("car.add,admin")]
     public class ProductManager : IProductService
     {
         private IProductDal _productDal;
@@ -75,7 +74,7 @@ namespace Business.Concrete
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
         }
 
-        
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
@@ -98,7 +97,7 @@ namespace Business.Concrete
 
         public IResult Update(Product product)
         {
-            IResult result = BusinessRules.Run( );
+            IResult result = BusinessRules.Run();
             if (result != null)
             {
                 return result;

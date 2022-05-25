@@ -12,9 +12,11 @@ public    class NortwindContext:DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //Data Source=DESKTOP-7B09P62;Initial Catalog=Northwind;Integrated Security=Tru
+            //DataSource=DESKTOP-7B09P62;Initial Catalog=Northwind;Integrated Security=Tru
 
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-7B09P62;Database=Northwind; Trusted_Connection=true");
+             optionsBuilder.UseSqlServer(@"Server=DESKTOP-7B09P62;Database=Northwind; Trusted_Connection=true");
+
+            //optionsBuilder.UseSqlServer(@"workstation id=Northwinds.mssql.somee.com;packet size=4096;user id=mahsum12_SQLLogin_1;pwd=7ndi393yjy;data source=Northwinds.mssql.somee.com;persist security info=False;initial catalog=Northwinds");
         }
 
         public DbSet<Product> Products{ get; set; }
